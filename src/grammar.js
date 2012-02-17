@@ -1,4 +1,6 @@
-var Parser = require('jison').Parser;
+var Parser = require('jison').Parser,
+    fs     = require('fs')
+    path   = require('path');
 
 var unwrap = /^function\s*\(\)\s*\{\s*return\s*([\s\S]*);\s*\}/;
 
@@ -14,7 +16,7 @@ var l = function(pattern, action) {
 }
 
 var lexer = [
-  [/\s+/,        "/* skip whitespace */"],
+  [/\s+/,                   "/* skip whitespace */"],
   l(/[0-9]+("."[0-9]+)?\b/, function(){ return "NUMBER";      }),
   l("pls",                  function(){ return "PLEASE";      }),
   l("tku",                  function(){ return "THANKYOU";    }),
@@ -37,19 +39,19 @@ var grammar = {
     g('Operation ADDEDUPON Operation',   function(){ return $1 + $3; }),
     g('Operation TAKEAWAY Operation',    function(){ return $1 - $3; }),
     g('Operation TIMES Operation',       function(){ return $1 * $3; }),
-    g('Operation SHAREDAMONG Operation', function(){ return $1 * $3; }),
+    g('Operation SHAREDAMONG Operation', function(){ return $1 / $3; }),
     g('( Operation )',                   function(){ return $2; }),
     g('NUMBER',                          function(){ return +(yytext); })
   ]
 };
 
 var operators = [
-  ['left', 'ADDEDTO', 'TAKEAWAY'],
-  ['left', 'TIMES', 'SHAREDAMONG']
+  ['left', 'ADDEDUPON', 'TAKEAWAY'],
+  ['left', 'TIMES',     'SHAREDAMONG']
 ];
 
 
-exports.parser = new Parser({
+var parser = exports.parser = new Parser({
   bnf:       grammar,
   operators: operators,
   lex:       {rules: lexer}
