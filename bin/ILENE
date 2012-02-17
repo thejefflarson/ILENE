@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+var path   = require('path');
+var parser = require(path.join(__dirname, '..', 'src', 'grammar.js')).parser;
+var fs     = require('fs');
+
+process.argv.slice(2).forEach(function(it){
+  parser.parse(fs.readFileSync(it, 'utf-8'));
+});
