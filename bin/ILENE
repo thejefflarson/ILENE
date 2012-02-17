@@ -4,5 +4,7 @@ var parser = require(path.join(__dirname, '..', 'src', 'grammar.js')).parser;
 var fs     = require('fs');
 
 process.argv.slice(2).forEach(function(it){
-  parser.parse(fs.readFileSync(it, 'utf-8'));
+  var src = fs.readFileSync(it, 'utf-8');
+  console.log("parsing", src);
+  parser.parse(src);
 });

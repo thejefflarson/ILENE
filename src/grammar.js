@@ -12,23 +12,26 @@ var g = function(pattern, action, options){
 
 // So we can write js in the lexer
 var l = function(pattern, action) {
-  return [pattern, unwrap.exec(action)[1]];
+  var act = action ? unwrap.exec(action)[1] : '"' + pattern.source.replace('\\', '') + '"';
+  return [pattern, act];
 }
 
 var lexer = [
-  [/\s+/,                   "/* skip whitespace */"],
+  l(/\s+/,                  function(){ return ' ';           }),
   l(/[0-9]+("."[0-9]+)?\b/, function(){ return "NUMBER";      }),
-  l("pls",                  function(){ return "PLEASE";      }),
-  l("tku",                  function(){ return "THANKYOU";    }),
-  l("addedupon",            function(){ return "ADDEDUPON";   }),
-  l("takeaway",             function(){ return "TAKEAWAY";    }),
-  l("times",                function(){ return "TIMES";       }),
-  l("sharedamong",          function(){ return "SHAREDAMONG"; })
+  l(/pls/,                  function(){ return "PLEASE";      }),
+  l(/tku/,                  function(){ return "THANKYOU";    }),
+  l(/addedupon/,            function(){ return "ADDEDUPON";   }),
+  l(/takeaway/,             function(){ return "TAKEAWAY";    }),
+  l(/times/,                function(){ return "TIMES";       }),
+  l(/sharedamong/,          function(){ return "SHAREDAMONG"; }),
+  l(/\(/),
+  l(/\)/)
 ];
 
 var grammar = {
   Program: [
-    g('Statement')
+    g('Statement TERMINATOR')
   ],
 
   Statement: [
