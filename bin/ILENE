@@ -1,11 +1,51 @@
 #!/usr/bin/env node
-var path   = require('path');
-var parser = require(path.join(__dirname, '..', 'src', 'grammar.js')).parser;
-var fs     = require('fs');
+var path   = require('path'),
+    parser = require(path.join(__dirname, '..', 'src', 'grammar.js')).parser,
+    fs     = require('fs'),
+    repl   = require('repl');
 
-process.argv.slice(2).forEach(function(it){
-  var src = fs.readFileSync(it, 'utf-8');
-  console.log("parsing", src);
+var ILENE = function(cmd, context, file, cb){
+  if(/undefined/.test(cmd)) return cb(null, ohno('Please enter a command.'));
+  parser.parse(cmd.replace(/^\(/, '').replace(/\)$/, ''));
+  cb(null, ohcool('Nice working with you.'));
+};
 
-  parser.parse(src);
-});
+var colors = {
+  pink: "\033[35m{m}\033[39m",
+  red: "\033[31m{m}\033[39m"
+}
+
+var pretty = function(color, message) {
+  return colors[color].replace('{m}', message);
+}
+
+var flowers = {
+  big: "♥",
+  small: "✿"
+}
+
+var flower = function(size, message) {
+  return flowers[size] + " " + message;
+}
+
+var ohcool = function(message){
+  console.log(pretty('pink', flower('small', message)));
+  return ''
+}
+
+
+var ohno = function(error){
+  console.log(pretty('red', flower('big', error)));
+  return '';
+};
+
+process.on('uncaughtException', ohno);
+
+if(process.argv.length > 2) {
+  process.argv.slice(2).forEach(function(it){
+    var src = fs.readFileSync(it, 'utf-8');
+    parser.parse(src);
+  });
+} else {
+  repl.start("ILENE> ", process, ILENE);
+}
