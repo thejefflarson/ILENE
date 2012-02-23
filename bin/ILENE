@@ -4,6 +4,10 @@ var path   = require('path'),
     fs     = require('fs'),
     repl   = require('repl');
 
+var BANNER = fs.readFileSync(path.join(__dirname, '..', 'README'));
+
+
+
 var ILENE = function(cmd, context, file, cb){
   if(/undefined/.test(cmd)) return cb(null, ohno('Please enter a command.'));
   parser.parse(cmd.replace(/^\(/, '').replace(/\)$/, ''));
@@ -38,6 +42,8 @@ var ohno = function(error){
   console.log(pretty('red', flower('big', error)));
   return '';
 };
+
+console.log(pretty("pink", BANNER));
 
 process.on('uncaughtException', ohno);
 
