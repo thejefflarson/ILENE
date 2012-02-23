@@ -6,5 +6,6 @@ var fs     = require('fs');
 process.argv.slice(2).forEach(function(it){
   var src = fs.readFileSync(it, 'utf-8');
   console.log("parsing", src);
+
   parser.parse(src);
 });
