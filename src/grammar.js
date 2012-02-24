@@ -1,5 +1,5 @@
 var Parser = require('jison').Parser,
-    fs     = require('fs')
+    fs     = require('fs'),
     path   = require('path');
 
 

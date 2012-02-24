@@ -6,8 +6,6 @@ var path   = require('path'),
 
 var BANNER = fs.readFileSync(path.join(__dirname, '..', 'README'));
 
-
-
 var ILENE = function(cmd, context, file, cb){
   if(/undefined/.test(cmd)) return cb(null, ohno('Please enter a command.'));
   parser.parse(cmd.replace(/^\(/, '').replace(/\)$/, ''));
@@ -37,9 +35,24 @@ var ohcool = function(message){
   return ''
 }
 
+var oops = [
+  "It seems that while creative, the command you just entered has gone awry and not generated the results that you might have hoped for.",
+  "So sorry, but I think you might want to check what you just did.",
+  "Good try my friend, but you might want to double-check that last command.",
+  "Are you certain you want to do that?"
+]
+
+
+var oopsies = function(error){
+  var idx = 1;
+  return oops[Math.random() * oops.length | 0].split(" ").reduce(function(memo, it){
+    return memo + " " + it + (idx++ % 10 === 0 ? "\n" : "");
+  }, "") + '\n' + error;
+}
+
 
 var ohno = function(error){
-  console.log(pretty('red', flower('big', error)));
+  console.log(pretty('red', flower('big', oopsies(error))));
   return '';
 };
 
