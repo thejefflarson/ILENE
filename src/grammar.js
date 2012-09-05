@@ -11,7 +11,9 @@ var lexer = [
   ["addedupon",             '{ return "ADDEDUPON";   }'],
   ["takeaway",              '{ return "TAKEAWAY";    }'],
   ["times",                 '{ return "TIMES";       }'],
-  ["sharedamong",           '{ return "SHAREDAMONG"  }'],
+  ["sharedamong",           '{ return "SHAREDAMONG"; }'],
+  ["do",                    '{ return "DO";          }'],
+  ["ok",                    '{ return "OK";          }'],
   ["<<EOF>>",               '{ return "EOF";         }'],
   ["\\(",                   '{ return "("            }'],
   ["\\)",                   '{ return ")"            }']
@@ -32,7 +34,8 @@ var grammar = {
   ],
 
   Statement: [
-    g('PLEASE Operation THANKYOU',       function(){ return $2; })
+    g('PLEASE Operation THANKYOU',       function(){ return $2; }),
+    g('PLEASE Subroutine THANKYOU',      function(){ return $2; })
   ],
 
   Operation: [
@@ -42,6 +45,10 @@ var grammar = {
     g('Operation SHAREDAMONG Operation', function(){ return $1 / $3; }),
     g('( Operation )',                   function(){ return $2; }),
     g('NUMBER',                          function(){ return Number(yytext); })
+  ],
+
+  Subroutine: [
+    g('DO operation OK')
   ]
 };
 

@@ -1,5 +1,7 @@
 {
+  "name": "ILENE",
+  "version": "0.0.1",
   "devDependencies" : {
-    "jison" : ">=1.0.0"
+    "jison" : ">=0.3.12"
   }
 }

@@ -63,7 +63,7 @@ process.on('uncaughtException', ohno);
 if(process.argv.length > 2) {
   process.argv.slice(2).forEach(function(it){
     var src = fs.readFileSync(it, 'utf-8');
-    parser.parse(src);
+    console.log(parser.parse(src));
   });
 } else {
   repl.start("ILENE> ", process, ILENE);
