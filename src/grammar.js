@@ -12,11 +12,13 @@ var lexer = [
   ["takeaway",              '{ return "TAKEAWAY";    }'],
   ["times",                 '{ return "TIMES";       }'],
   ["sharedamong",           '{ return "SHAREDAMONG"; }'],
+  ["remember",              '{ return "REMEMBER";    }'],
   ["do",                    '{ return "DO";          }'],
   ["ok",                    '{ return "OK";          }'],
   ["<<EOF>>",               '{ return "EOF";         }'],
   ["\\(",                   '{ return "("            }'],
-  ["\\)",                   '{ return ")"            }']
+  ["\\)",                   '{ return ")"            }'],
+  ["(\\w+)?\\b",             '{ return "LABEL";      }']
 ];
 
 var unwrap = /^function\s*\(\)\s*\{\s*return\s*([\s\S]*);\s*\}/;
@@ -27,6 +29,7 @@ var g = function(pattern, action){
   return [pattern, "$$ = " + act];
 };
 
+var global = {};
 
 var grammar = {
   Program: [
@@ -35,7 +38,10 @@ var grammar = {
 
   Statement: [
     g('PLEASE Operation THANKYOU',       function(){ return $2; }),
-    g('PLEASE Subroutine THANKYOU',      function(){ return $2; })
+    g('PLEASE Subroutine THANKYOU',      function(){ return $2; }),
+    g('PLEASE LABEL THANKYOU',           function(){ return global[$2]; }),
+    g('PLEASE REMEMBER LABEL Operation THANKYOU',  function() { return (global[$3] = $4); }),
+    g('PLEASE REMEMBER LABEL Subroutine THANKYOU', function() { return (global[$3] = $4); })
   ],
 
   Operation: [
@@ -48,7 +54,7 @@ var grammar = {
   ],
 
   Subroutine: [
-    g('DO operation OK')
+    g('DO Operation OK',                 function() { return function() { return $2; }; })
   ]
 };
 
